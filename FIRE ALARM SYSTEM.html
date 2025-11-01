@@ -1,0 +1,635 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Aegis Sentinel - Fire Control Interface</title>
+  
+  <!-- PWA Manifest & Theme -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#020617">
+<link rel="icon" href="icon/3.ico" type="image/x-icon">
+
+  <!-- Scripts -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+  
+  <style>
+    /* --- Base & Theming --- */
+    :root {
+      --color-slate-900: #0f172a; --color-slate-800: #1e293b;
+      --color-cyan-glow: rgba(34, 211, 238, 0.5); --color-red-glow: rgba(248, 113, 113, 0.6);
+      --color-background: #020617;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      background-color: var(--color-background);
+      background-image:
+        radial-gradient(at 0% 0%, hsla(224, 80%, 10%, 0.4) 0px, transparent 50%),
+        radial-gradient(at 98% 98%, hsla(290, 80%, 20%, 0.3) 0px, transparent 50%);
+      font-family: 'Roboto', sans-serif;
+    }
+    h1, h2, h3, .font-display { font-family: 'Orbitron', sans-serif; text-transform: uppercase; letter-spacing: 0.1em; }
+    
+    /* --- Glass Panel Effect --- */
+    .glass-panel {
+      background: rgba(15, 23, 42, 0.6);
+      -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+      border: 1px solid rgba(56, 189, 248, 0.2);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+
+    /* --- Animations --- */
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .animate-fade-in { animation: fadeIn 0.5s ease-out forwards; }
+    
+    @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
+    .animate-fade-out { animation: fadeOut 0.5s ease-in forwards; }
+
+    @keyframes subtle-glow {
+      0%, 100% { border-color: rgba(56, 189, 248, 0.2); box-shadow: 0 0 15px rgba(56, 189, 248, 0.1); }
+      50% { border-color: rgba(56, 189, 248, 0.5); box-shadow: 0 0 25px rgba(56, 189, 248, 0.3); }
+    }
+    @keyframes alert-glow {
+      0%, 100% { border-color: rgba(248, 113, 113, 0.4); box-shadow: 0 0 20px var(--color-red-glow); }
+      50% { border-color: rgba(248, 113, 113, 0.8); box-shadow: 0 0 35px var(--color-red-glow); }
+    }
+    .status-safe { animation: subtle-glow 4s ease-in-out infinite; }
+    .status-alert { animation: alert-glow 1.5s ease-in-out infinite; }
+    
+    @keyframes alert-pulse-bg {
+      0% { background-color: rgba(225, 29, 72, 0.2); }
+      50% { background-color: rgba(225, 29, 72, 0.4); }
+      100% { background-color: rgba(225, 29, 72, 0.2); }
+    }
+    .alert-pulse { animation: alert-pulse-bg 1.5s infinite; }
+
+    /* --- Custom UI Components --- */
+    .btn { transition: all 0.2s ease-in-out; }
+    .btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(0,0,0,0.4); }
+    .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    
+    .log-scroll::-webkit-scrollbar { width: 4px; }
+    .log-scroll::-webkit-scrollbar-track { background: transparent; }
+    .log-scroll::-webkit-scrollbar-thumb { background: rgba(56, 189, 248, 0.5); border-radius: 4px; }
+    
+    input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none; appearance: none;
+        width: 20px; height: 20px;
+        background: #0ea5e9; border-radius: 50%; cursor: pointer;
+        border: 3px solid #f8fafc;
+        margin-top: -7px;
+    }
+
+    /* --- Loader --- */
+    #loader-container {
+      position: fixed; inset: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: center;
+      background-color: var(--color-background);
+    }
+    .loader-box {
+      width: 100%; max-width: 400px;
+      padding: 2.5rem; text-align: center;
+    }
+    .loader-logo {
+      width: 5rem; height: 5rem; margin: auto;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #f97316, #ef4444);
+      animation: flicker 1.5s ease-in-out infinite;
+    }
+    @keyframes flicker { 0%, 100% { opacity: 1; box-shadow: 0 0 20px #f97316; } 50% { opacity: 0.8; box-shadow: 0 0 30px #ef4444; } }
+    .progress-bar-bg { background-color: rgba(255,255,255,0.1); }
+    .progress-bar { width: 0%; transition: width 4s ease-out; }
+  </style>
+</head>
+
+<body class="min-h-screen text-slate-300 antialiased">
+
+  <!-- ==================================
+       LOADER SCREEN
+  =================================== -->
+  <div id="loader-container">
+    <div class="loader-box glass-panel rounded-2xl">
+      <div class="loader-logo">
+        <svg class="w-10 h-10 text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v18m0-18c-2.38.337-4.512 1.28-6.186 2.814M12 3c2.38.337 4.512 1.28 6.186 2.814M12 12a9 9 0 11-12-3.014A9 9 0 0112 12zm0 0a9 9 0 1012-3.014A9 9 0 0012 12z" />
+        </svg>
+      </div>
+      <h1 class="text-3xl font-bold text-white mt-6 mb-2 font-display">AEGIS SENTINEL</h1>
+      <p class="text-amber-400 mb-6 text-sm" id="progressText">CALIBRATING INTERFACE...</p>
+      <div class="w-full progress-bar-bg rounded-full h-1.5 overflow-hidden">
+          <div id="progressBar" class="progress-bar bg-gradient-to-r from-amber-500 to-red-500 h-1.5 rounded-full"></div>
+      </div>
+    </div>
+  </div>
+  
+  <audio id="alarmSound" preload="auto" loop src="data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA"></audio> <!-- Placeholder for alarm sound -->
+
+  <!-- ==================================
+       MAIN APPLICATION
+  =================================== -->
+  <div id="app" class="max-w-7xl w-full mx-auto p-4 md:p-6 opacity-0" style="display: none;">
+    
+    <!-- Header -->
+    <header class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-700/50 pb-4 mb-6">
+      <div class="flex items-center gap-3">
+          <svg class="h-8 w-8 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.286zm0 13.036h.008v.008h-.008v-.008z" /></svg>
+          <h1 class="text-2xl md:text-3xl font-bold font-display tracking-wider">
+            <span class="text-white">AEGIS</span>
+            <span class="text-slate-400">SENTINEL</span>
+          </h1>
+      </div>
+      <div class="flex items-center gap-3">
+        <div id="connectionIndicator" class="flex items-center gap-2 font-semibold text-xs px-3 py-1.5 rounded-full bg-slate-800/80 border border-slate-700">
+          <div id="connectionDot" class="w-2.5 h-2.5 rounded-full bg-red-500 transition-all shadow-lg"></div>
+          <span id="connectionText">OFFLINE</span>
+        </div>
+        <button id="btnSettings" class="btn p-2 rounded-lg bg-slate-800 hover:bg-slate-700" title="Settings">
+          <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0L8.21 5.15c-.5.42-1.12.7-1.78.83l-2.05.28c-1.6.22-2.22 2.18-1.04 3.21l1.49 1.32c.41.36.62.9.54 1.44l-.36 2.06c-.27 1.58 1.27 2.84 2.71 2.26l1.85-.75c.57-.23 1.21-.23 1.78 0l1.85.75c1.44.58 2.98-.68 2.71-2.26l-.36-2.06c-.08-.54.13-1.08.54-1.44l1.49-1.32c1.18-1.03.56-2.99-1.04-3.21l-2.05-.28c-.66-.13-1.28-.4-1.78-.83l-1.3-1.98zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd" /></svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Grid -->
+    <main class="grid grid-cols-1 lg:grid-cols-5 gap-6">
+      
+      <!-- Left Column: Status & Control -->
+      <section class="lg:col-span-3 flex flex-col gap-6">
+        <!-- Status Panel -->
+        <div id="statusPanel" class="glass-panel rounded-2xl p-6 status-safe transition-all duration-500">
+          <h2 class="font-display text-xl text-cyan-300 mb-4">SYSTEM STATUS</h2>
+          <div class="flex flex-col md:flex-row items-center justify-between gap-8">
+            <div id="alertBadge" class="w-48 h-48 md:w-56 md:h-56 flex-shrink-0 rounded-full flex flex-col justify-center items-center p-4 border-4 border-slate-700 bg-slate-900/50 transition-all duration-500 text-center">
+              <div id="bigState" class="text-5xl font-black tracking-widest font-display text-green-400">SAFE</div>
+              <div id="smallState" class="text-sm text-slate-400 mt-2">All Systems Nominal</div>
+            </div>
+            <div class="w-full grid grid-cols-2 gap-4">
+              <div class="p-4 rounded-lg bg-slate-900/70">
+                <div class="text-sm text-cyan-300 font-semibold">Flame Sensor</div>
+                <div id="lblFlame" class="text-3xl font-bold font-mono mt-1 transition-colors duration-300">—</div>
+              </div>
+              <div class="p-4 rounded-lg bg-slate-900/70">
+                <div class="text-sm text-cyan-300 font-semibold">Temperature</div>
+                <div id="lblTemp" class="text-3xl font-bold font-mono mt-1">— °C</div>
+              </div>
+              <div class="p-4 rounded-lg bg-slate-900/70 col-span-2">
+                <div class="text-sm text-cyan-300 font-semibold">Last Event</div>
+                <div id="lblLast" class="text-base text-slate-300 mt-1.5 font-mono truncate">—</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Control Panel -->
+        <div class="glass-panel rounded-2xl p-6">
+            <h2 class="font-display text-xl text-cyan-300 mb-4">OPERATIONS</h2>
+            <div class="space-y-4">
+              <div>
+                <label for="rngTemp" class="text-sm font-semibold text-slate-300">Temperature Threshold: <span id="lblTempThreshValue" class="text-cyan-300 font-mono text-base">50°C</span></label>
+                <input id="rngTemp" type="range" min="30" max="120" value="50" class="w-full h-1.5 mt-2 bg-slate-700 rounded-lg appearance-none cursor-pointer">
+              </div>
+              <div id="demoControls" class="hidden">
+                  <p class="text-xs font-semibold text-purple-400 mb-2 font-display">Demo Controls</p>
+                  <div class="grid grid-cols-3 gap-3">
+                      <button id="demoBtnFlame" class="btn text-xs py-2 rounded-lg font-semibold bg-amber-600/90 hover:bg-amber-600">TRIGGER FLAME</button>
+                      <button id="demoBtnTemp" class="btn text-xs py-2 rounded-lg font-semibold bg-red-600/90 hover:bg-red-600">TRIGGER TEMP</button>
+                      <button id="demoBtnResolve" class="btn text-xs py-2 rounded-lg font-semibold bg-green-600/90 hover:bg-green-600">RESOLVE ALL</button>
+                  </div>
+              </div>
+              <div>
+                  <p class="text-xs font-semibold text-slate-400 mb-2 font-display">System Controls</p>
+                  <div class="grid grid-cols-3 gap-3">
+                      <button id="btnSilence" class="btn py-2.5 rounded-lg font-semibold bg-yellow-500/90 hover:bg-yellow-500 text-slate-900">SILENCE ALARM</button>
+                      <button id="btnReset" class="btn py-2.5 rounded-lg font-semibold bg-sky-500/90 hover:bg-sky-500 text-slate-900">RESET SYSTEM</button>
+                      <button id="btnTest" class="btn py-2.5 rounded-lg font-semibold bg-rose-500/90 hover:bg-rose-500 text-white">TEST ALARM</button>
+                  </div>
+              </div>
+            </div>
+        </div>
+      </section>
+
+      <!-- Right Column: Analysis & Logs -->
+      <section class="lg:col-span-2 glass-panel rounded-2xl p-6 flex flex-col min-h-[500px] lg:min-h-0">
+        <h2 class="font-display text-xl text-cyan-300 mb-4">DATA LOG & ANALYSIS</h2>
+        <div class="flex-grow min-h-[200px] relative">
+            <canvas id="historyChart"></canvas>
+        </div>
+        <div class="flex-grow flex flex-col min-h-0 border-t border-slate-700/80 mt-4 pt-4">
+            <p class="text-xs font-semibold text-slate-400 mb-2 font-display">EVENT LOG</p>
+            <div id="logBox" class="h-full overflow-y-auto pr-2 text-xs space-y-2 log-scroll bg-slate-900/70 p-3 rounded-lg border border-slate-700/80 flex-grow"></div>
+        </div>
+      </section>
+
+    </main>
+
+    <footer class="text-center mt-6 text-slate-500 text-xs">
+        <p>Aegis Sentinel Project © <span id="year"></span>. Developed by Sadeepa Lakshan.</p>
+        <button id="btnInstall" class="hidden mt-2 text-cyan-400 hover:underline">Install App</button>
+    </footer>
+  </div>
+
+  <!-- ==================================
+       SETTINGS MODAL
+  =================================== -->
+  <div id="settingsModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fade-in" style="display: none;">
+    <div class="w-full max-w-md glass-panel rounded-2xl border-cyan-400/50 shadow-2xl p-6 relative">
+        <button id="btnCloseSettings" class="absolute top-3 right-3 p-2 rounded-full hover:bg-white/10">&times;</button>
+        <h2 class="text-2xl font-bold font-display text-white mb-6">CONNECT & CONFIGURE</h2>
+        <div class="space-y-5">
+            <div>
+              <h3 class="font-semibold text-cyan-300 mb-3 font-display">QUICK CONNECT</h3>
+              <div class="grid grid-cols-2 gap-3">
+                <button id="btnDemo" class="btn py-3 rounded-lg font-semibold bg-purple-600">DEMO MODE</button>
+                <button id="btnConnectBLE" class="btn py-3 rounded-lg font-semibold bg-blue-600">BLUETOOTH</button>
+              </div>
+            </div>
+            <div class="border-t border-slate-700 pt-4">
+                <h3 class="font-semibold text-green-400 mb-3 font-display">ADVANCED (WEBSOCKET)</h3>
+                <label for="wsIpInput" class="text-sm text-slate-400">Device URL (e.g., ws://192.168.4.1)</label>
+                <input type="text" id="wsIpInput" class="w-full p-2 mt-1 rounded-md bg-slate-800 border border-slate-600 focus:ring-2 focus:ring-green-400 outline-none" placeholder="ws://...">
+                <button id="btnConnectWS" class="w-full mt-2 btn py-3 rounded-lg font-semibold bg-green-600">CONNECT</button>
+            </div>
+            <div class="border-t border-slate-700 pt-4">
+                 <button id="btnDisconnect" class="w-full btn py-3 rounded-lg font-semibold bg-red-600">DISCONNECT</button>
+            </div>
+        </div>
+    </div>
+  </div>
+  
+<script>
+// --- SCRIPT EXECUTION STARTS HERE ---
+
+// --- LOADER SCRIPT ---
+const initLoader = () => {
+    const progressBar = document.getElementById('progressBar');
+    const loaderContainer = document.getElementById('loader-container');
+    const appContainer = document.getElementById('app');
+
+    // Start the progress bar animation
+    setTimeout(() => {
+        if(progressBar) progressBar.style.width = '100%';
+    }, 100);
+
+    // After 4 seconds, fade out loader and fade in app
+    setTimeout(() => {
+        if (loaderContainer) {
+            loaderContainer.classList.add('animate-fade-out');
+            loaderContainer.addEventListener('animationend', () => loaderContainer.style.display = 'none');
+        }
+        if (appContainer) {
+            appContainer.style.display = 'block';
+            appContainer.classList.add('animate-fade-in');
+            appContainer.style.opacity = '1'; // Set final opacity
+        }
+        // Initialize the main application logic
+        App.init();
+    }, 4100);
+};
+
+// --- MAIN APPLICATION OBJECT ---
+const App = {
+    // --- STATE ---
+    state: {
+        isConnecting: false, isConnected: false, isAlarmActive: false,
+        connectionType: null, temperature: NaN, flameDetected: false,
+        lastEvent: "System Initialized", threshold: 50,
+        connections: { bleDevice: null, bleCommandChar: null, demoInterval: null, websocket: null }
+    },
+
+    // --- CONFIG ---
+    config: {
+        BLE_UUIDs: {
+            service: "4fafc201-1fb5-459e-8fcc-c5c9c331914b",
+            sensor:  "beb5483e-36e1-4688-b7f5-ea07361b26a8",
+            command: "8687353f-45d6-4357-92a3-7c73797669a8",
+        },
+        CHART_MAX_POINTS: 60,
+    },
+    
+    // --- ELEMENTS & CHART INSTANCE ---
+    elements: {}, chart: null,
+
+    // --- INITIALIZATION ---
+    init() {
+        this.cacheElements();
+        this.bindEventListeners();
+        this.initChart();
+        this.initPWA();
+        this.addLog("Aegis Sentinel Interface Initialized.", 'success');
+        this.render();
+        document.getElementById("year").textContent = new Date().getFullYear();
+    },
+
+    cacheElements() {
+        const ids = ['connectionIndicator', 'connectionDot', 'connectionText', 'btnSettings', 'btnInstall', 'statusPanel', 'alertBadge', 'bigState', 'smallState', 'lblFlame', 'lblTemp', 'lblLast', 'rngTemp', 'lblTempThreshValue', 'historyChart', 'logBox', 'settingsModal', 'btnCloseSettings', 'btnConnectBLE', 'btnConnectWS', 'wsIpInput', 'btnDemo', 'btnDisconnect', 'alarmSound', 'btnSilence', 'btnReset', 'btnTest', 'demoControls', 'demoBtnFlame', 'demoBtnTemp', 'demoBtnResolve'];
+        ids.forEach(id => this.elements[id] = document.getElementById(id));
+    },
+
+    bindEventListeners() {
+        this.elements.btnSettings.onclick = () => this.toggleModal(true);
+        this.elements.btnCloseSettings.onclick = () => this.toggleModal(false);
+        this.elements.btnSilence.onclick = () => this.sendCommand('SILENCE');
+        this.elements.btnReset.onclick = () => this.sendCommand('RESET');
+        this.elements.btnTest.onclick = () => this.sendCommand('TEST');
+        
+        this.elements.btnConnectBLE.onclick = () => this.connect('ble');
+        this.elements.btnConnectWS.onclick = () => this.connect('ws');
+        this.elements.btnDemo.onclick = () => this.connect('demo');
+        this.elements.btnDisconnect.onclick = () => this.disconnect();
+        
+        this.elements.demoBtnFlame.onclick = () => this.triggerDemoAlert('flame');
+        this.elements.demoBtnTemp.onclick = () => this.triggerDemoAlert('temp');
+        this.elements.demoBtnResolve.onclick = () => this.triggerDemoAlert('resolve');
+        
+        this.elements.rngTemp.oninput = (e) => this.elements.lblTempThreshValue.textContent = `${e.target.value}°C`;
+        this.elements.rngTemp.onchange = (e) => {
+            this.state.threshold = parseInt(e.target.value, 10);
+            this.sendCommand(`SET_THRESHOLD:${this.state.threshold}`);
+            this.addLog(`Temperature threshold set to ${this.state.threshold}°C`, 'info');
+        };
+    },
+    
+    toggleModal(show) {
+        if (!this.elements.settingsModal) return;
+        if (show) {
+            this.elements.settingsModal.style.display = 'flex';
+            this.elements.settingsModal.classList.remove('animate-fade-out');
+            this.elements.settingsModal.classList.add('animate-fade-in');
+        } else {
+            this.elements.settingsModal.classList.remove('animate-fade-in');
+            this.elements.settingsModal.classList.add('animate-fade-out');
+            this.elements.settingsModal.addEventListener('animationend', () => {
+                 this.elements.settingsModal.style.display = 'none';
+            }, { once: true });
+        }
+    },
+
+    // --- RENDER ---
+    render() {
+        const { state, elements } = this;
+        // Connection Status
+        elements.connectionDot.className = 'w-2.5 h-2.5 rounded-full transition-all shadow-lg';
+        if (state.isConnecting) {
+            elements.connectionText.textContent = 'CONNECTING...';
+            elements.connectionDot.classList.add('bg-yellow-400', 'animate-pulse');
+        } else if (state.isConnected) {
+            elements.connectionText.textContent = `${state.connectionType.toUpperCase()}`;
+            const color = { demo: 'bg-purple-400', ble: 'bg-blue-400', ws: 'bg-green-400'}[state.connectionType];
+            elements.connectionDot.classList.add(color);
+        } else {
+            elements.connectionText.textContent = 'OFFLINE';
+            elements.connectionDot.classList.add('bg-red-500');
+        }
+        
+        // Main Status Panel
+        elements.statusPanel.className = 'glass-panel rounded-2xl p-6 transition-all duration-500';
+        elements.statusPanel.classList.add(state.isAlarmActive ? 'status-alert' : 'status-safe');
+        
+        // Alert Badge
+        elements.alertBadge.classList.toggle('alert-pulse', state.isAlarmActive);
+        elements.bigState.textContent = state.isAlarmActive ? 'ALERT' : 'SAFE';
+        elements.bigState.classList.toggle('text-red-400', state.isAlarmActive);
+        elements.bigState.classList.toggle('text-green-400', !state.isAlarmActive);
+        elements.smallState.textContent = state.isAlarmActive ? 'Threat Detected!' : 'All Systems Nominal';
+
+        // Sensor Readings
+        elements.lblFlame.textContent = state.flameDetected ? 'DETECTED' : 'Clear';
+        elements.lblFlame.classList.toggle('text-amber-400', state.flameDetected);
+        elements.lblTemp.textContent = isNaN(state.temperature) ? '— °C' : `${state.temperature.toFixed(1)} °C`;
+        elements.lblTemp.classList.toggle('text-red-400', state.temperature > state.threshold);
+        elements.lblLast.textContent = state.lastEvent;
+
+        // Controls
+        elements.rngTemp.disabled = !state.isConnected;
+        elements.demoControls.classList.toggle('hidden', state.connectionType !== 'demo');
+        
+        // Sound
+        try {
+            if (state.isAlarmActive && elements.alarmSound.paused) {
+                elements.alarmSound.play();
+            } else if (!state.isAlarmActive) {
+                elements.alarmSound.pause();
+                elements.alarmSound.currentTime = 0;
+            }
+        } catch (e) {
+            this.addLog('Audio playback failed. User interaction may be required.', 'warn');
+        }
+    },
+    
+    // --- DATA & STATE LOGIC ---
+    updateSensorData(temp, flame) {
+        this.state.temperature = parseFloat(temp);
+        this.state.flameDetected = Boolean(flame);
+        this.updateChart(this.state.temperature, this.state.flameDetected);
+        
+        let shouldBeAlarm = this.state.flameDetected || (this.state.temperature > this.state.threshold);
+        if (shouldBeAlarm && !this.state.isAlarmActive) {
+            this.setAlarmState(true, this.state.flameDetected ? "Flame Detected!" : `Temp. Threshold Exceeded`);
+        } else if (!shouldBeAlarm && this.state.isAlarmActive) {
+            // This condition is handled by RESET command, not automatically.
+        }
+        this.render();
+    },
+
+    setAlarmState(isActive, reason = "State Changed") {
+        if(this.state.isAlarmActive === isActive) return;
+        this.state.isAlarmActive = isActive;
+        if (isActive) {
+            this.addLog(`ALARM TRIGGERED: ${reason}`, 'error');
+        } else {
+            this.state.flameDetected = false; // Reset flame on alarm reset
+            this.addLog("Alarm has been reset by user.", 'warn');
+        }
+        this.render();
+    },
+
+    addLog(msg, type = 'info') {
+        const colors = { info: 'text-sky-400', warn: 'text-amber-400', error: 'text-red-400', success: 'text-green-400' };
+        const logEntry = document.createElement('p');
+        logEntry.className = 'animate-fade-in';
+        logEntry.innerHTML = `<span class="text-slate-500 mr-2">[${new Date().toLocaleTimeString()}]</span><span class="${colors[type] || colors.info}">${msg}</span>`;
+        this.elements.logBox.prepend(logEntry);
+        if (this.elements.logBox.children.length > 100) this.elements.logBox.lastChild.remove();
+        this.state.lastEvent = msg;
+    },
+
+    // --- CHARTING ---
+    initChart() {
+        if (!this.elements.historyChart) return;
+        const ctx = this.elements.historyChart.getContext('2d');
+        const gradient = ctx.createLinearGradient(0, 0, 0, 200);
+        gradient.addColorStop(0, 'rgba(34, 211, 238, 0.4)');
+        gradient.addColorStop(1, 'rgba(34, 211, 238, 0)');
+        this.chart = new Chart(ctx, {
+            type: 'line',
+            data: { labels: [], datasets: [ 
+                { label: 'Temp (°C)', data: [], borderColor: '#22d3ee', backgroundColor: gradient, yAxisID: 'yTemp', tension: 0.3, fill: true }, 
+                { label: 'Flame', data: [], borderColor: '#f97316', stepped: true, yAxisID: 'yFlame' } 
+            ] },
+            options: { 
+                responsive: true, maintainAspectRatio: false, 
+                scales: { 
+                    x: { type: 'time', time: { unit: 'second', displayFormats: { second: 'HH:mm:ss' } }, grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { color: '#94a3b8' } }, 
+                    yTemp: { position: 'left', beginAtZero: true, grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { color: '#94a3b8' } }, 
+                    yFlame: { position: 'right', grid: { drawOnChartArea: false }, min: -0.1, max: 1.1, ticks: { stepSize: 1, color: '#f97316', callback: value => value === 1 ? 'ON' : 'OFF' } } 
+                }, 
+                plugins: { legend: { display: false } } 
+            }
+        });
+    },
+    updateChart(temp, flame) {
+        if (!this.chart) return;
+        const now = Date.now();
+        this.chart.data.labels.push(now);
+        this.chart.data.datasets[0].data.push(temp);
+        this.chart.data.datasets[1].data.push(flame ? 1 : 0);
+        if (this.chart.data.labels.length > this.config.CHART_MAX_POINTS) {
+            this.chart.data.labels.shift();
+            this.chart.data.datasets.forEach(dataset => dataset.data.shift());
+        }
+        this.chart.update('quiet');
+    },
+
+    // --- CONNECTIVITY & COMMANDS ---
+    async connect(type) {
+        if (this.state.isConnected || this.state.isConnecting) return this.addLog('Already connected or connecting.', 'warn');
+        this.state.isConnecting = true;
+        this.state.connectionType = type;
+        this.toggleModal(false);
+        this.render();
+        try {
+            if (type === 'ble') await this._connectBLE();
+            else if (type === 'ws') await this._connectWebSocket();
+            else if (type === 'demo') this._startDemo();
+            else throw new Error("Unsupported connection type.");
+            this.state.isConnected = true;
+            this.addLog(`Successfully connected via ${type.toUpperCase()}.`, 'success');
+        } catch (error) {
+            this.addLog(`Connection Failed: ${error.message}`, 'error');
+            console.error(error);
+            this.disconnect(); // Cleanup on failure
+        } finally {
+            this.state.isConnecting = false;
+            this.render();
+        }
+    },
+    disconnect() {
+        if (this.state.connections.bleDevice?.gatt.connected) this.state.connections.bleDevice.gatt.disconnect();
+        if (this.state.connections.demoInterval) clearInterval(this.state.connections.demoInterval);
+        if (this.state.connections.websocket) this.state.connections.websocket.close();
+        
+        const wasConnected = this.state.isConnected;
+        this.state = { ...this.state, connections: {}, isConnected: false, isConnecting: false, connectionType: null };
+        this.setAlarmState(false);
+        if (wasConnected) this.addLog('Disconnected.', 'warn');
+        this.render();
+    },
+    async sendCommand(cmd) {
+        if (!this.state.isConnected) return this.addLog('Cannot send command: Not connected.', 'error');
+        this.addLog(`Sending command: ${cmd}`, 'info');
+
+        try {
+            if (this.state.connectionType === 'ble' && this.state.connections.bleCommandChar) {
+                await this.state.connections.bleCommandChar.writeValue(new TextEncoder().encode(cmd));
+            } else if (this.state.connectionType === 'ws' && this.state.connections.websocket) {
+                this.state.connections.websocket.send(JSON.stringify({ command: cmd }));
+            } else if (this.state.connectionType === 'demo') {
+                if (cmd.startsWith('TEST')) this.setAlarmState(true, "Manual Test");
+                if (cmd === 'RESET' || cmd === 'SILENCE') this.setAlarmState(false);
+            }
+        } catch (error) {
+            this.addLog(`Command failed: ${error.message}`, 'error');
+            console.error(error);
+        }
+    },
+    
+    // --- DEMO MODE ---
+    triggerDemoAlert(type) {
+        if (this.state.connectionType !== 'demo') return;
+        if (type === 'flame') this.updateSensorData(this.state.temperature, true);
+        else if (type === 'temp') this.updateSensorData(this.state.threshold + 20, this.state.flameDetected);
+        else if (type === 'resolve') this.sendCommand('RESET');
+    },
+    _startDemo() {
+        this.state.connections.demoInterval = setInterval(() => {
+            if (!this.state.isAlarmActive) {
+                const newTemp = 25 + (Math.random() - 0.5) * 4;
+                this.updateSensorData(newTemp, false);
+            }
+        }, 2000);
+    },
+    
+    // --- INTERNAL CONNECTION METHODS ---
+    _connectWebSocket() {
+        return new Promise((resolve, reject) => {
+            const ip = this.elements.wsIpInput.value;
+            if (!ip || !ip.startsWith('ws://')) return reject(new Error('Invalid WebSocket URL.'));
+            this.addLog(`Connecting to WebSocket at ${ip}...`);
+            const socket = new WebSocket(ip);
+            
+            socket.onopen = () => { this.state.connections.websocket = socket; resolve(); };
+            socket.onmessage = (event) => this._handleWSMessage(event);
+            socket.onerror = (error) => { console.error('WebSocket Error:', error); reject(new Error('WebSocket connection error')); };
+            socket.onclose = () => this.disconnect();
+        });
+    },
+    _handleWSMessage(event) {
+        try {
+            const data = JSON.parse(event.data);
+            if (data.temp !== undefined && data.flame !== undefined) {
+                this.updateSensorData(data.temp, data.flame);
+            }
+        } catch (e) { this.addLog(`Invalid data from WebSocket: ${event.data}`, 'error'); }
+    },
+
+    async _connectBLE() {
+        if (!navigator.bluetooth) throw new Error('Web Bluetooth is not supported on this browser.');
+        this.addLog('Requesting Bluetooth device...');
+        const device = await navigator.bluetooth.requestDevice({
+            filters: [{ name: 'Aegis Sentinel' }, { services: [this.config.BLE_UUIDs.service] }],
+        });
+        this.state.connections.bleDevice = device;
+        device.addEventListener('gattserverdisconnected', () => this.disconnect());
+        this.addLog('Connecting to GATT server...');
+        const server = await device.gatt.connect();
+        const service = await server.getPrimaryService(this.config.BLE_UUIDs.service);
+        this.addLog('Getting characteristics...');
+        this.state.connections.bleCommandChar = await service.getCharacteristic(this.config.BLE_UUIDs.command);
+        const sensorChar = await service.getCharacteristic(this.config.BLE_UUIDs.sensor);
+        await sensorChar.startNotifications();
+        sensorChar.addEventListener('characteristicvaluechanged', (e) => this._handleBLENotification(e.target.value));
+    },
+    _handleBLENotification(value) {
+        // Assuming data format: 4 bytes float for temp, 1 byte for flame
+        const temp = value.getFloat32(0, true); // true for little-endian
+        const flame = value.getUint8(4) > 0;
+        this.updateSensorData(temp, flame);
+    },
+
+    // --- PWA INSTALL HANDLER ---
+    initPWA() {
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            if (this.elements.btnInstall) {
+                this.elements.btnInstall.classList.remove('hidden');
+                this.elements.btnInstall.onclick = () => {
+                    deferredPrompt.prompt();
+                };
+            }
+        });
+    }
+};
+
+// Start the loader process once the DOM is fully loaded
+document.addEventListener('DOMContentLoaded', initLoader);
+</script>
+</body>
+</html>
