@@ -1,24 +1,22 @@
 <!DOCTYPE html>
-<!-- Sets the language of the document to English -->
 <html lang="en">
 <head>
-    <!-- Specifies the character encoding for the document -->
     <meta charset="UTF-8">
-    <!-- Configures the viewport for responsive design -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Sets the title of the browser tab -->
     <title>Next-Gen Tech Showcase | Enhanced UI</title>
     
-    <!-- Website Icon (Favicon) -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234f46e5' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.82 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.82 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.82-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.82-3.31 2.37-2.37a1.724 1.724 0 002.572-1.065z'></path><path d='M15 12a3 3 0 11-6 0 3 3 0 016 0z'></path></svg>">
     
-    <!-- Tailwind CSS framework -->
+    <link rel="preconnect" href="https://cdn.tailwindcss.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Internal CSS styles -->
     <style>
-        /* Imports the 'Inter' font from Google Fonts */
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        /* PERFORMANCE OPTIMIZATION: @import was removed as it is now loaded via a non-blocking <link> tag above. */
         
         /* --- 1. Core Setup & Theming --- */
         :root {
@@ -260,7 +258,6 @@
         #back-to-top:hover { transform: translateY(-4px); }
     </style>
 
-    <!-- Tailwind CSS configuration script -->
     <script>
         tailwind.config = {
             theme: {
@@ -281,7 +278,6 @@
 
 <body class="bg-primary-dark text-text-light min-h-screen">
 
-    <!-- LOADING SCREEN -->
     <div id="loading-screen">
         <div class="loader-atom">
             <div class="nucleus"></div>
@@ -292,18 +288,15 @@
         <p class="mt-8 text-lg font-medium text-text-muted tracking-widest animate-pulse">INITIALIZING...</p>
     </div>
 
-    <!-- Header and Navigation -->
     <header id="main-header" class="sticky top-0 z-50 transition-all duration-300 border-b border-transparent">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-20">
-                <!-- Logo and Site Title -->
                 <div class="flex-shrink-0">
                     <a href="#home" class="text-2xl font-bold tracking-tight text-text-light group flex items-center gap-2">
                         <svg class="w-8 h-8 text-accent-blue group-hover:rotate-12 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.82 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.82 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.82-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.82-3.31 2.37-2.37a1.724 1.724 0 002.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
                         Tech Showcase
                     </a>
                 </div>
-                <!-- Desktop Navigation -->
                 <nav class="hidden md:block">
                     <div class="ml-10 flex items-baseline space-x-6">
                         <a href="#home" class="nav-link text-text-muted hover:text-text-light transition-colors duration-200" data-section="home">Home</a>
@@ -311,7 +304,6 @@
                         <a href="#projects" class="nav-link text-text-muted hover:text-text-light transition-colors duration-200" data-section="projects">Innovations</a>
                     </div>
                 </nav>
-                <!-- Mobile Menu Button -->
                 <div class="md:hidden flex items-center">
                     <button id="menu-button" type="button" class="p-2 rounded-md text-text-muted hover:bg-border-dark focus:outline-none" aria-controls="mobile-menu" aria-expanded="false">
                         <span class="sr-only">Open main menu</span>
@@ -321,7 +313,6 @@
                 </div>
             </div>
         </div>
-        <!-- Mobile Menu -->
         <div class="md:hidden hidden" id="mobile-menu">
             <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3 border-t border-border-dark">
                 <a href="#home" class="nav-link block px-3 py-2 rounded-md text-base font-medium text-text-muted hover:text-text-light hover:bg-border-dark" data-section="home">Home</a>
@@ -333,7 +324,6 @@
 
     <main>
         
-        <!-- 1. Hero Section -->
         <section id="home" class="relative min-h-screen flex items-center justify-center text-center overflow-hidden hero-aurora-bg">
             <canvas id="hero-canvas"></canvas>
             <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -352,7 +342,6 @@
             </div>
         </section>
 
-        <!-- 2. About Section -->
         <section id="about" class="py-24 sm:py-32">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center">
@@ -366,7 +355,6 @@
                 </div>
 
                 <div class="mt-20 grid grid-cols-1 gap-8 md:grid-cols-3">
-                    <!-- Feature Card 1 -->
                     <div class="about-card rounded-xl animate-on-scroll" style="animation-delay: 0.3s;">
                         <div class="about-card-content flex flex-col items-center text-center">
                             <div class="flex-shrink-0 mb-4 p-3 bg-primary-dark rounded-full border border-border-dark">
@@ -376,7 +364,6 @@
                             <p class="text-text-muted">From concept to functional prototype, our projects solve common household and industrial problems efficiently.</p>
                         </div>
                     </div>
-                    <!-- Feature Card 2 -->
                     <div class="about-card rounded-xl animate-on-scroll" style="animation-delay: 0.4s;">
                         <div class="about-card-content flex flex-col items-center text-center">
                              <div class="flex-shrink-0 mb-4 p-3 bg-primary-dark rounded-full border border-border-dark">
@@ -386,7 +373,6 @@
                             <p class="text-text-muted">Projects integrate Physics, Programming, and Electrical Engineering for a holistic learning experience.</p>
                         </div>
                     </div>
-                    <!-- Feature Card 3 -->
                     <div class="about-card rounded-xl animate-on-scroll" style="animation-delay: 0.5s;">
                         <div class="about-card-content flex flex-col items-center text-center">
                              <div class="flex-shrink-0 mb-4 p-3 bg-primary-dark rounded-full border border-border-dark">
@@ -400,7 +386,6 @@
             </div>
         </section>
 
-        <!-- 3. Projects Section -->
         <section id="projects" class="py-24 sm:py-32 bg-secondary-dark border-y border-border-dark">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center">
@@ -415,7 +400,6 @@
 
                 <div class="mt-20 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
                     
-                    <!-- Project Card: Hand Controlled Car -->
                     <div class="project-card animate-on-scroll" onclick="openModal('hand-controlled-car')">
                         <div class="project-card-image-wrapper">
                             <picture>
@@ -433,7 +417,6 @@
                         </div>
                     </div>
                     
-                    <!-- Project Card: Robot Arm -->
                     <div class="project-card animate-on-scroll" style="animation-delay: 0.1s;" onclick="openModal('robot-arm')">
                         <div class="project-card-image-wrapper">
                             <picture>
@@ -451,7 +434,6 @@
                         </div>
                     </div>
 
-                    <!-- Project Card: Water Level Controller -->
                     <div class="project-card animate-on-scroll" style="animation-delay: 0.2s;" onclick="openModal('water-level-controller')">
                         <div class="project-card-image-wrapper">
                              <picture>
@@ -469,8 +451,7 @@
                         </div>
                     </div>
 
-                    <!-- Project Card: Water Supply System -->
-                     <div class="project-card animate-on-scroll" onclick="openModal('water-supply-system')">
+                    <div class="project-card animate-on-scroll" onclick="openModal('water-supply-system')">
                         <div class="project-card-image-wrapper">
                             <picture>
                                <source srcset="water supplly.webp" type="image/webp">
@@ -487,7 +468,6 @@
                         </div>
                     </div>
 
-                    <!-- Project Card: Fire Alarm -->
                     <div class="project-card animate-on-scroll" style="animation-delay: 0.1s;" onclick="openModal('fire-alarm')">
                         <div class="project-card-image-wrapper">
                              <picture>
@@ -505,7 +485,6 @@
                         </div>
                     </div>
 
-                    <!-- Project Card: Lighting Control -->
                     <div class="project-card animate-on-scroll" style="animation-delay: 0.2s;" onclick="openModal('lighting-control')">
                         <div class="project-card-image-wrapper">
                              <picture>
@@ -528,18 +507,15 @@
         </section>
     </main>
 
-    <!-- Project Modal -->
     <div id="project-modal" class="modal-overlay" onclick="closeModal(event)">
         <div class="modal-content relative" onclick="event.stopPropagation()">
             <button class="absolute top-4 right-4 text-text-muted hover:text-text-light transition-colors z-10" onclick="closeModal()" aria-label="Close modal">
                 <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
             </button>
-            <!-- Dynamic project content will be injected here -->
             <div id="modal-body"></div>
         </div>
     </div>
 
-    <!-- Footer -->
     <footer class="bg-primary-dark py-12">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-text-muted border-t border-border-dark pt-8">
              <div class="flex justify-center items-center space-x-6 mb-6">
@@ -558,13 +534,11 @@
         </div>
     </footer>
 
-    <!-- Back to Top Button -->
     <a href="#home" id="back-to-top" aria-label="Back to Top">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path></svg>
     </a>
 
-    <!-- Main JavaScript for interactivity -->
-    <script>
+    <script defer>
         const projectData = {
             'hand-controlled-car': {
                 title: 'Hand Controlled Car',
