@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Next-Gen Tech Showcase | Enhanced UI</title>
+    <title>Next Gen Showcase </title>
     
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234f46e5' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.82 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.82 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426-1.756-2.924-1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.82-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.82-3.31 2.37-2.37a1.724 1.724 0 002.572-1.065z'></path><path d='M15 12a3 3 0 11-6 0 3 3 0 016 0z'></path></svg>">
     
@@ -40,179 +40,7 @@
 
         :target { scroll-padding-top: 6rem; }
 
-        /* --- 2. Enhanced Animations & Transitions --- */
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(40px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .animate-on-scroll { opacity: 0; }
-        .animated { animation: fadeInUp 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
-
-        @keyframes hero-text-in {
-            from { opacity: 0; transform: translateY(30px) scale(0.95); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
-        }
-        .hero-animate { animation: hero-text-in 1s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        .hero-animate-1 { animation-delay: 0.2s; }
-        .hero-animate-2 { animation-delay: 0.4s; }
-        .hero-animate-3 { animation-delay: 0.6s; }
-
-        /* --- 3. Component Styling --- */
-        .header-scrolled {
-            background: rgba(16, 16, 24, 0.65);
-            backdrop-filter: blur(12px) saturate(180%);
-            -webkit-backdrop-filter: blur(12px) saturate(180%);
-            border-bottom: 1px solid rgba(240, 240, 245, 0.1);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-        }
-
-        .nav-link { position: relative; padding-bottom: 0.5rem; }
-        .nav-link::after {
-            content: '';
-            position: absolute;
-            width: 0;
-            height: 2px;
-            bottom: 0;
-            left: 0;
-            background: var(--accent-gradient);
-            border-radius: 2px;
-            transition: width 0.3s ease;
-        }
-        .nav-link:hover::after, .nav-link.active-link::after { width: 100%; }
-        
-        #hero-canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-            opacity: 0.5;
-        }
-
-        .hero-aurora-bg {
-             background: var(--primary-dark);
-        }
-        
-        .btn-primary {
-            background: var(--accent-gradient);
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        }
-        .btn-primary:hover {
-            transform: translateY(-3px) scale(1.05);
-            box-shadow: 0 10px 25px var(--accent-glow);
-            filter: brightness(1.2);
-        }
-
-        .btn-secondary {
-            background: var(--secondary-dark);
-            border: 1px solid var(--border-dark);
-            transition: all 0.3s ease;
-        }
-        .btn-secondary:hover {
-            transform: translateY(-3px) scale(1.05);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-            border-color: var(--accent-blue);
-        }
-        
-        .about-card {
-            position: relative;
-            background: var(--secondary-dark);
-            border: 1px solid var(--border-dark);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            overflow: hidden;
-        }
-        .about-card::before {
-            content: '';
-            position: absolute;
-            inset: -1px;
-            background: var(--accent-gradient);
-            border-radius: inherit;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            z-index: -1;
-        }
-        .about-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-        }
-        .about-card:hover::before { opacity: 1; }
-        .about-card-content {
-            background: var(--secondary-dark);
-            border-radius: inherit;
-            padding: 2rem;
-            height: 100%;
-        }
-
-        .project-card {
-            background: var(--secondary-dark);
-            border-radius: 1.25rem;
-            border: 1px solid var(--border-dark);
-            overflow: hidden;
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            position: relative;
-            cursor: pointer;
-        }
-        .project-card:hover {
-            transform: translateY(-10px) scale(1.02);
-            box-shadow: 0 25px 50px -12px rgba(79, 70, 229, 0.3);
-            border-color: var(--accent-blue);
-        }
-        .project-card-image-wrapper { overflow: hidden; aspect-ratio: 16/9; position: relative; }
-        .project-card-image {
-            width: 100%; height: 100%; object-fit: cover;
-            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .project-card:hover .project-card-image { transform: scale(1.1) rotate(1deg); }
-        .project-card-overlay {
-            position: absolute; inset: 0;
-            background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, transparent 60%);
-            display: flex; flex-direction: column; justify-content: flex-end;
-            padding: 2rem; transition: background 0.4s ease;
-        }
-        .project-card:hover .project-card-overlay { background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, transparent 80%); }
-        .project-card-tags {
-            display: flex; gap: 0.5rem; flex-wrap: wrap;
-            transform: translateY(10px); opacity: 0;
-            transition: all 0.4s ease 0.1s;
-        }
-        .project-card:hover .project-card-tags { transform: translateY(0); opacity: 1; }
-        .project-card-details-cta {
-            position: absolute; top: 1.5rem; right: 1.5rem;
-            background: rgba(16, 16, 24, 0.8);
-            backdrop-filter: blur(8px);
-            border-radius: 9999px; padding: 0.75rem 1.25rem;
-            font-size: 0.875rem; transform: scale(0.9); opacity: 0;
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .project-card:hover .project-card-details-cta { transform: scale(1); opacity: 1; }
-        
-        .modal-overlay {
-            position: fixed; inset: 0;
-            background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(10px);
-            z-index: 1000; opacity: 0; visibility: hidden;
-            transition: all 0.4s ease;
-            display: flex; align-items: center; justify-content: center; padding: 1rem;
-        }
-        .modal-overlay.active { opacity: 1; visibility: visible; }
-        .modal-content {
-            background: var(--secondary-dark); border-radius: 1.25rem;
-            width: 100%; max-width: 64rem; max-height: 90vh;
-            overflow: hidden; transform: translateY(20px) scale(0.95);
-            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            border: 1px solid var(--border-dark); display: flex; flex-direction: column;
-        }
-        .modal-overlay.active .modal-content { transform: translateY(0) scale(1); }
-        #modal-body {
-            overflow-y: auto; display: grid; grid-template-columns: 1fr;
-            padding: 2.5rem; gap: 2rem;
-        }
-        @media (min-width: 768px) {
-            #modal-body { grid-template-columns: repeat(2, 1fr); }
-        }
-
+        /* --- 2. Loading Screen --- */
         #loading-screen {
             position: fixed; inset: 0; 
             background: var(--primary-dark);
@@ -269,8 +97,9 @@
         @keyframes spin { to { transform: rotate(360deg); } }
         .loader-text {
             color: var(--text-light);
-            font-size: 2.5rem;
-            letter-spacing: 4px;
+            font-size: 2rem;
+            letter-spacing: 2px;
+            text-align: center;
             font-weight: 800;
             text-shadow: 0 0 15px var(--accent-blue);
             animation: flicker 3s infinite;
@@ -281,13 +110,164 @@
         }
         #loading-status { min-height: 1.5rem; }
 
+        /* --- Mobile Optimizations for Loading Screen --- */
+        @media (max-width: 768px) {
+            .loader-ring {
+                width: 120px;
+                height: 120px;
+            }
+            /* Hide outer rings on mobile */
+            .loader-ring::before, .loader-ring::after {
+                display: none;
+            }
+            .loader-text {
+                font-size: 1.5rem;
+                /* Use a simpler, less-intensive animation on mobile */
+                animation: pulse 2s ease-in-out infinite;
+            }
+            @keyframes pulse {
+                0%, 100% { opacity: 1; }
+                50% { opacity: 0.7; }
+            }
+        }
+        
+        /* --- 3. Component Styling --- */
+        .header-scrolled {
+            background: rgba(16, 16, 24, 0.65);
+            backdrop-filter: blur(12px) saturate(180%);
+            -webkit-backdrop-filter: blur(12px) saturate(180%);
+            border-bottom: 1px solid rgba(240, 240, 245, 0.1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-on-scroll { opacity: 0; }
+        .animated { animation: fadeInUp 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
+
+        @keyframes hero-text-in {
+            from { opacity: 0; transform: translateY(30px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .hero-animate { animation: hero-text-in 1s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        .hero-animate-1 { animation-delay: 0.2s; }
+        .hero-animate-2 { animation-delay: 0.4s; }
+        .hero-animate-3 { animation-delay: 0.6s; }
+
+        .nav-link { position: relative; padding-bottom: 0.5rem; }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background: var(--accent-gradient);
+            border-radius: 2px;
+            transition: width 0.3s ease;
+        }
+        .nav-link:hover::after, .nav-link.active-link::after { width: 100%; }
+        
+        #hero-canvas {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; opacity: 0.5;
+        }
+        .hero-aurora-bg { background: var(--primary-dark); }
+        
+        .btn-primary {
+            background: var(--accent-gradient); transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        .btn-primary:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 10px 25px var(--accent-glow); filter: brightness(1.2);
+        }
+
+        .btn-secondary {
+            background: var(--secondary-dark); border: 1px solid var(--border-dark); transition: all 0.3s ease;
+        }
+        .btn-secondary:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3); border-color: var(--accent-blue);
+        }
+        
+        .about-card {
+            position: relative; background: var(--secondary-dark); border: 1px solid var(--border-dark);
+            transition: transform 0.3s ease, box-shadow 0.3s ease; overflow: hidden;
+        }
+        .about-card::before {
+            content: ''; position: absolute; inset: -1px; background: var(--accent-gradient);
+            border-radius: inherit; opacity: 0; transition: opacity 0.3s ease; z-index: -1;
+        }
+        .about-card:hover {
+            transform: translateY(-8px); box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        .about-card:hover::before { opacity: 1; }
+        .about-card-content {
+            background: var(--secondary-dark); border-radius: inherit; padding: 2rem; height: 100%;
+        }
+
+        .project-card {
+            background: var(--secondary-dark); border-radius: 1.25rem; border: 1px solid var(--border-dark);
+            overflow: hidden; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative; cursor: pointer;
+        }
+        .project-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 25px 50px -12px rgba(79, 70, 229, 0.3); border-color: var(--accent-blue);
+        }
+        .project-card-image-wrapper { overflow: hidden; aspect-ratio: 16/9; position: relative; }
+        .project-card-image {
+            width: 100%; height: 100%; object-fit: cover;
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .project-card:hover .project-card-image { transform: scale(1.1) rotate(1deg); }
+        .project-card-overlay {
+            position: absolute; inset: 0;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, transparent 60%);
+            display: flex; flex-direction: column; justify-content: flex-end;
+            padding: 2rem; transition: background 0.4s ease;
+        }
+        .project-card:hover .project-card-overlay { background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, transparent 80%); }
+        .project-card-tags {
+            display: flex; gap: 0.5rem; flex-wrap: wrap;
+            transform: translateY(10px); opacity: 0; transition: all 0.4s ease 0.1s;
+        }
+        .project-card:hover .project-card-tags { transform: translateY(0); opacity: 1; }
+        .project-card-details-cta {
+            position: absolute; top: 1.5rem; right: 1.5rem;
+            background: rgba(16, 16, 24, 0.8); backdrop-filter: blur(8px);
+            border-radius: 9999px; padding: 0.75rem 1.25rem; font-size: 0.875rem;
+            transform: scale(0.9); opacity: 0; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .project-card:hover .project-card-details-cta { transform: scale(1); opacity: 1; }
+        
+        .modal-overlay {
+            position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(10px);
+            z-index: 1000; opacity: 0; visibility: hidden; transition: all 0.4s ease;
+            display: flex; align-items: center; justify-content: center; padding: 1rem;
+        }
+        .modal-overlay.active { opacity: 1; visibility: visible; }
+        .modal-content {
+            background: var(--secondary-dark); border-radius: 1.25rem;
+            width: 100%; max-width: 64rem; max-height: 90vh; overflow: hidden;
+            transform: translateY(20px) scale(0.95); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            border: 1px solid var(--border-dark); display: flex; flex-direction: column;
+        }
+        .modal-overlay.active .modal-content { transform: translateY(0) scale(1); }
+        #modal-body {
+            overflow-y: auto; display: grid; grid-template-columns: 1fr;
+            padding: 2.5rem; gap: 2rem;
+        }
+        @media (min-width: 768px) { #modal-body { grid-template-columns: repeat(2, 1fr); } }
+
         #back-to-top {
             position: fixed; bottom: 2rem; right: 2rem;
             background: var(--accent-gradient); color: var(--text-light);
-            width: 3rem; height: 3rem; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            opacity: 0; visibility: hidden; transform: translateY(20px);
-            transition: all 0.3s ease;
+            width: 3rem; height: 3rem; border-radius: 50%; display: flex;
+            align-items: center; justify-content: center; opacity: 0;
+            visibility: hidden; transform: translateY(20px); transition: all 0.3s ease;
             box-shadow: 0 4px 15px var(--accent-glow); z-index: 50;
         }
         #back-to-top.visible { opacity: 1; visibility: visible; transform: translateY(0); }
@@ -314,12 +294,12 @@
 
 <body class="bg-primary-dark text-text-light min-h-screen">
 
-    <!-- Enhanced New Loading Screen -->
+    <!-- Mobile-Optimized Loading Screen -->
     <div id="loading-screen">
         <div id="circuits"></div>
         <div class="relative z-10 flex flex-col items-center">
             <div class="loader-ring mb-8"></div>
-            <h1 class="loader-text mb-4">TECH SHOWCASE</h1>
+            <h1 class="loader-text mb-4 px-4">NEXT GEN SHOWCASE</h1>
             <p id="loading-status" class="text-accent-blue font-mono text-sm tracking-widest uppercase animate-pulse">Initializing Core Systems...</p>
         </div>
     </div>
@@ -328,9 +308,9 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-20">
                 <div class="flex-shrink-0">
-                    <a href="#home" class="text-2xl font-bold tracking-tight text-text-light group flex items-center gap-2">
+                    <a href="#home" class="text-xl sm:text-2xl font-bold tracking-tight text-text-light group flex items-center gap-2">
                         <svg class="w-8 h-8 text-accent-blue group-hover:rotate-12 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.82 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.82 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426-1.756-2.924-1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.82-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.82-3.31 2.37-2.37a1.724 1.724 0 002.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                        Tech Showcase
+                        Next Gen Showcase
                     </a>
                 </div>
                 <nav class="hidden md:block">
@@ -688,9 +668,10 @@
             const animatedElements = document.querySelectorAll('.animate-on-scroll');
             const backToTop = document.getElementById('back-to-top');
 
-            // --- New Loading Screen Logic ---
+            // --- Mobile-Optimized Loading Screen Logic ---
             const circuitsContainer = document.getElementById('circuits');
-            for (let i = 0; i < 25; i++) {
+            const numLines = window.innerWidth < 768 ? 10 : 25; // Fewer lines on mobile
+            for (let i = 0; i < numLines; i++) {
                 const line = document.createElement('div');
                 line.classList.add('circuit-line');
                 line.style.left = Math.random() * 100 + 'vw';
