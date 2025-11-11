@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
 <head>
@@ -499,6 +500,51 @@
                             <div class="project-card-details-cta">View Details</div>
                         </div>
                     </div>
+                    
+                    <!-- ADDED CARD 1 -->
+                    <div class="project-card animate-on-scroll" style="animation-delay: 0.6s;" onclick="openModal('smart-trash-bin')">
+                        <div class="project-card-image-wrapper">
+                            <img src="Smart Trash Bin .webp" alt="Smart Trash Bin" class="project-card-image" loading="lazy" width="1280" height="720">
+                            <div class="project-card-overlay">
+                                <h3 class="text-2xl font-bold text-text-light">Smart Trash Bin</h3>
+                                <div class="project-card-tags mt-2">
+                                    <span class="text-xs bg-white/10 text-text-light px-2 py-1 rounded-full">Automation</span>
+                                    <span class="text-xs bg-white/10 text-text-light px-2 py-1 rounded-full">Hygiene</span>
+                                </div>
+                            </div>
+                            <div class="project-card-details-cta">View Details</div>
+                        </div>
+                    </div>
+
+                    <!-- ADDED CARD 2 -->
+                    <div class="project-card animate-on-scroll" style="animation-delay: 0.7s;" onclick="openModal('smart-cane')">
+                        <div class="project-card-image-wrapper">
+                            <img src="smartcane.webp" alt="Smart Cane for Blind People" class="project-card-image" loading="lazy" width="1280" height="720">
+                            <div class="project-card-overlay">
+                                <h3 class="text-2xl font-bold text-text-light">Smart Cane for Blind People</h3>
+                                <div class="project-card-tags mt-2">
+                                    <span class="text-xs bg-white/10 text-text-light px-2 py-1 rounded-full">Assistive Tech</span>
+                                    <span class="text-xs bg-white/10 text-text-light px-2 py-1 rounded-full">Safety</span>
+                                </div>
+                            </div>
+                            <div class="project-card-details-cta">View Details</div>
+                        </div>
+                    </div>
+                    
+                    <!-- ADDED CARD 3 -->
+                    <div class="project-card animate-on-scroll" style="animation-delay: 0.8s;" onclick="openModal('dark-led-system')">
+                        <div class="project-card-image-wrapper">
+                            <img src="nightlight.webp" alt="LED Lighting System That Works in the Dark" class="project-card-image" loading="lazy" width="1280" height="720">
+                            <div class="project-card-overlay">
+                                <h3 class="text-2xl font-bold text-text-light">LED Lighting System for the Dark</h3>
+                                <div class="project-card-tags mt-2">
+                                    <span class="text-xs bg-white/10 text-text-light px-2 py-1 rounded-full">Automation</span>
+                                    <span class="text-xs bg-white/10 text-text-light px-2 py-1 rounded-full">Energy Saving</span>
+                                </div>
+                            </div>
+                            <div class="project-card-details-cta">View Details</div>
+                        </div>
+                    </div>
 
                 </div>
             </div>
@@ -588,6 +634,27 @@
                 tech: ['Motion Sensing', 'Automation', 'Energy Efficiency', 'Zigbee'],
                 url: 'LIGHTING CONTROL SYSTEM.html',
                 downloadUrl: 'https://example.com/download/lighting-control-project.zip'
+            },
+            'smart-trash-bin': {
+                title: 'Smart Trash Bin',
+                description: 'This innovative trash bin uses an ultrasonic sensor to detect presence and a servo motor to automatically open the lid, offering a touch-free and hygienic waste disposal solution. It is a great introduction to sensor-based automation.',
+                image: 'Smart Trash Bin1.webp',
+                tech: ['Sensors', 'Automation', 'Hygiene', 'Arduino'],
+                downloadUrl: 'https://example.com/download/smart-trash-bin.zip'
+            },
+            'smart-cane': {
+                title: 'Smart Cane for Blind People',
+                description: 'An advanced walking cane designed to enhance mobility for the visually impaired. It integrates ultrasonic sensors to detect obstacles, providing alerts through a buzzer or vibration motor, ensuring safer navigation.',
+                image: 'smartcane1.webp',
+                tech: ['Assistive Tech', 'Ultrasonic Sensors', 'Mobility', 'Safety'],
+                downloadUrl: 'https://example.com/download/smart-cane.zip'
+            },
+            'dark-led-system': {
+                title: 'LED Lighting System That Works in the Dark',
+                description: 'An intelligent lighting system that automatically illuminates dark areas like hallways and staircases. Using advanced presence sensors, it lights up your path as you move, ensuring safety while conserving energy by only lighting the required area.',
+                image: 'nightlight1.webp',
+                tech: ['Automation', 'Presence Sensing', 'Energy Saving', 'LED'],
+                downloadUrl: 'https://example.com/download/dark-led-system.zip'
             }
         };
 
@@ -598,29 +665,32 @@
             if (!data) return;
 
             let visitButtonsHtml = '';
-            if (projectId === 'hand-controlled-car' && typeof data.url === 'object') {
-                visitButtonsHtml = `
-                    <a href="${data.url.pc}" target="_blank" rel="noopener noreferrer" class="btn-primary inline-flex items-center justify-center px-6 py-3 font-medium rounded-full text-white w-full sm:w-auto">
-                        Visit for PC
-                        <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
-                    </a>
-                    <a href="${data.url.mobile}" target="_blank" rel="noopener noreferrer" class="btn-primary inline-flex items-center justify-center px-6 py-3 font-medium rounded-full text-white w-full sm:w-auto mt-3 sm:mt-0 sm:ml-4">
-                        Visit for Mobile
-                    </a>
-                `;
-            } else {
-                visitButtonsHtml = `
-                    <a href="${data.url}" target="_blank" rel="noopener noreferrer" class="btn-primary inline-flex items-center justify-center px-6 py-3 font-medium rounded-full text-white w-full sm:w-auto">
-                        Visit Project Page
-                        <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
-                    </a>
-                `;
+            if (data.url) {
+                if (projectId === 'hand-controlled-car' && typeof data.url === 'object') {
+                    visitButtonsHtml = `
+                        <a href="${data.url.pc}" target="_blank" rel="noopener noreferrer" class="btn-primary inline-flex items-center justify-center px-6 py-3 font-medium rounded-full text-white w-full sm:w-auto">
+                            Visit for PC
+                            <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                        </a>
+                        <a href="${data.url.mobile}" target="_blank" rel="noopener noreferrer" class="btn-primary inline-flex items-center justify-center px-6 py-3 font-medium rounded-full text-white w-full sm:w-auto mt-3 sm:mt-0 sm:ml-4">
+                            Visit for Mobile
+                        </a>
+                    `;
+                } else {
+                    visitButtonsHtml = `
+                        <a href="${data.url}" target="_blank" rel="noopener noreferrer" class="btn-primary inline-flex items-center justify-center px-6 py-3 font-medium rounded-full text-white w-full sm:w-auto">
+                            Visit Project Page
+                            <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                        </a>
+                    `;
+                }
             }
             
             let downloadButtonHtml = '';
             if (data.downloadUrl) {
+                 const marginClass = visitButtonsHtml ? 'mt-3 sm:mt-0 sm:ml-4' : '';
                 downloadButtonHtml = `
-                    <a href="${data.downloadUrl}" download class="btn-secondary inline-flex items-center justify-center px-6 py-3 font-medium rounded-full text-white w-full sm:w-auto mt-3 sm:mt-0 sm:ml-4">
+                    <a href="${data.downloadUrl}" download class="btn-secondary inline-flex items-center justify-center px-6 py-3 font-medium rounded-full text-white w-full sm:w-auto ${marginClass}">
                         Download Files
                         <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
                     </a>
@@ -691,7 +761,7 @@
             let textIndex = 0;
             const statusElement = document.getElementById("loading-status");
             
-            statusElement.textContent = loadingTexts[0];
+            statusElement.textContent = loadingTexts;
             
             const textInterval = setInterval(() => {
                 textIndex = (textIndex + 1) % loadingTexts.length;
